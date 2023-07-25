@@ -1,0 +1,60 @@
+
+# (C) 2023 Jack Lloyd
+#
+# Botan is released under the Simplified BSD License (see license.txt)
+
+name: tls-anvil
+
+permissions:
+  contents: read
+  # implicitly all other scopes not listed become none
+
+on:
+  push:
+     branches: [ master, ci/tls-anvil ] # !!!TODO!!! remove me!!!
+  pull_request:
+     branches: [ master ]
+
+jobs:
+  tls_anvil:
+    name: "TLS-Anvil"
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      # - uses: actions/checkout@v3
+
+      # - name: Setup Build Agent
+      #   uses: ./.github/actions/setup-build-agent
+      #   with:
+      #     target: shared
+      #     cache-key: linux-clang-x86_64-shared
+
+      # - name: Build and Test Botan
+      #   run: python3 ./src/scripts/ci_build.py --cc='clang' --test-results-dir=junit_results shared
+      - name: Install Java and Maven
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'zulu'
+
+      - name: Fetch TLS-Anvil fork for Botan tests
+        uses: actions/checkout@v3
+        with:
+          repository: FAlbertDev/TLS-Anvil
+          path: ./tlsanvil
+
+      - name: Build TLS-Anvil
+        working-directory: ./tlsanvil/
+        run: mvn install -DskipTests -Dspotless.apply.skip
+
+      - name: Temp - Execute TLS-Anvil
+        working-directory: ./tlsanvil/
+        run: java -jar ./TLS-Testsuite/apps/TLS-Testsuite.jar -help
+
+
+
+
+
+
+
