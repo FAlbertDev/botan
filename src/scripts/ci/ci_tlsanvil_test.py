@@ -50,7 +50,7 @@ def server_test(botan_exe_path: str, tls_anvil_jar_path: str):
         "-parallelHandshakes", "1",
         "-disableTcpDump",
         "-outputFolder", Config.test_suite_results_path,
-        "-testPackage", "de.rub.nds.tlstest.suite.tests.server.tls13.rfc8446.ClientHello", # tmp
+        "-tag", "happyflow13", # tmp
         "server", "-connect", f"{Config.server_dest_ip}:{Config.server_dest_port}"
     ]
 
