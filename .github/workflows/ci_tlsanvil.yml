@@ -65,12 +65,12 @@ jobs:
           # TLS-Anvil env to disable the loading bar
           DOCKER: 1
 
-      - name: Check TLS-Anvil Test Results
-        run: python3 ./src/scripts/ci/ci_tlsanvil_check.py --verbose ./TestSuiteResults
-
       - uses: actions/upload-artifact@v3
         with:
           name: tls-anvil-server-test-results
           path: |
             ./TestSuiteResults/
             ./logs/
+
+      - name: Check TLS-Anvil Test Results
+        run: python3 ./src/scripts/ci/ci_tlsanvil_check.py --verbose ./TestSuiteResults
