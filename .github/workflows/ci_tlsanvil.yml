@@ -16,7 +16,7 @@ on:
 
 jobs:
   tls_anvil:
-    name: "TLS-Anvil"
+    name: "TLS-Anvil - Botan Server Test"
 
     runs-on: ubuntu-22.04
 
@@ -34,8 +34,8 @@ jobs:
       - name: Build Botan
         run: ./configure.py --compiler-cache=ccache --build-targets=static,cli --without-documentation && make -j8
 
-      - name: Tmp - Test Botan Executable
-        run: ./botan --help
+      # - name: Tmp - Test Botan Executable
+      #   run: ./botan --help
 
       # - name: Build and Test Botan
       #   run: python3 ./src/scripts/ci_build.py --cc='clang' --test-results-dir=junit_results shared
@@ -55,11 +55,15 @@ jobs:
         working-directory: ./tlsanvil/
         run: mvn install -DskipTests -Dspotless.apply.skip
 
-      - name: Temp - Execute TLS-Anvil
-        working-directory: ./tlsanvil/
-        run: java -jar ./TLS-Testsuite/apps/TLS-Testsuite.jar -help
+      # - name: Temp - Execute TLS-Anvil
+      #   working-directory: ./tlsanvil/
+      #   run: java -jar ./TLS-Testsuite/apps/TLS-Testsuite.jar -help
 
+      - name: Test Botan Server with TLS-Anvil
+        run: python3 ./src/scripts/ci/ci_tlsanvil_test.py --server-test ./botan ./tlsanvil/TLS-Testsuite/apps/TLS-Testsuite.jar
 
+      - name: Check TLS-Anvil Test Results
+        run: python3 ./src/scripts/ci/ci_tlsanvil_check.py --verbose ./TestSuiteResults
 
 
 
