@@ -28,11 +28,11 @@ jobs:
       - name: Setup Build Agent
         uses: ./.github/actions/setup-build-agent
         with:
-          target: shared
-          cache-key: linux-clang-x86_64-shared
+          target: static
+          cache-key: linux-clang-x86_64-static
 
       - name: Build Botan
-        run: ./configure.py --compiler-cache=ccache --build-targets=shared,cli --without-documentation && make -j8
+        run: ./configure.py --compiler-cache=ccache --build-targets=static,cli --without-documentation && make -j8
 
       - name: Tmp - Test Botan Executable
         run: ./botan --help
