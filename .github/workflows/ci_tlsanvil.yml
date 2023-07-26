@@ -61,6 +61,9 @@ jobs:
 
       - name: Test Botan Server with TLS-Anvil
         run: python3 ./src/scripts/ci/ci_tlsanvil_test.py --server-test ./botan ./tlsanvil/TLS-Testsuite/apps/TLS-Testsuite.jar
+        env:
+          # TLS-Anvil env to disable the loading bar
+          DOCKER: 1
 
       - name: Check TLS-Anvil Test Results
         run: python3 ./src/scripts/ci/ci_tlsanvil_check.py --verbose ./TestSuiteResults
