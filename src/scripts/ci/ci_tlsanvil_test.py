@@ -51,7 +51,8 @@ def server_test(botan_exe_path: str, tls_anvil_jar_path: str):
         "-disableTcpDump",
         "-outputFolder", Config.test_suite_results_path,
         "-connectionTimeout", "5000",
-        "-tags", "happyflow13", # tmp
+        #"-tags", "happyflow13", # tmp
+        "-testPackage", "de.rub.nds.tlstest.suite.tests.server.tls12.rfc5246.TLSRecordProtocol"
         "server", "-connect", f"{Config.server_dest_ip}:{Config.server_dest_port}"
     ]
 
