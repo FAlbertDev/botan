@@ -33,7 +33,7 @@ def test_result_valid(method_name: str, result: str):
     is_valid = False
 
     if result not in failure_level:
-        logging.error("Unknown result key: %s. Skipped...", result)
+        logging.error("Unknown result key: '%s'. Skipped...", result)
         is_valid = True
 
     if failure_level[result] == failure_level["STRICTLY_SUCCEEDED"]:
@@ -53,7 +53,7 @@ def test_result_valid(method_name: str, result: str):
 
 def process_results_container(results_container_path: str):
     """
-    Given a path process the respective results container .json file.
+    Given a path, process the respective results container .json file.
     Returns True, iff the results of the container are expected.
     """
     success = False
@@ -73,7 +73,6 @@ def process_results_container(results_container_path: str):
             logging.error("Json file '%s' has missing entries.", results_container_path)
 
     return success
-
 
 
 def main(args=None):

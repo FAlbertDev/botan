@@ -23,7 +23,7 @@ class Config:
 
 def create_cert_and_key(botan_exe_path):
     """
-    Create a X.509 certificate and associated RSA key at base_path
+    Create a X.509 certificate and associated RSA key at Config.key_and_cert_storage_path
     using Botan's CLI.
 
     Returns: (<cert path>, <key path>)
