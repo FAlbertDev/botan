@@ -126,8 +126,10 @@ def process_results_container(results_container_path: str):
                 logging.debug("%s: '%s' -> ok", method_id, result)
                 success = True
             else:
+                red='\033[0;31m'
+                no_col='\033[0m' # No Color
                 #logging.info("%s: Unexpected result '%s'.\n\n%s", method_id, result, failing_test_info(json_data))
-                logging.error(f"Error: {failing_test_info(json_data, method_id)}")
+                logging.error(f"{red}Error: {failing_test_info(json_data, method_id)}{no_col}")
 
 
         except KeyError:
