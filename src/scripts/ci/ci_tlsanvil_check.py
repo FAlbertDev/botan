@@ -8,16 +8,16 @@ import os
 import json
 import logging
 
+failure_level = {
+    "STRICTLY_SUCCEEDED": 0,
+    "DISABLED": 1,
+    "CONCEPTUALLY_SUCCEEDED": 2,
+    "PARTIALLY_FAILED": 3,
+    "FULLY_FAILED": 4,
+}
 
-def test_result_valid(method_id: str, result: str):
-    """
-    Checks if a results for a given method name is valid. It contains lists
-    of test methods that are allowed to only partially succeed or even fail.
-
-    Return True iff the result is valid for the method.
-    """
-
-    # Whitelist Format: <ClassName>.<MethodName>, classname without prefix "de.rub.nds.tlstest.suite.tests."
+def expected_result_for(method_id: str):
+    """ Get the expected result for a given test id """
     allowed_to_conceptually_succeed = {
         #    "client.tls12.rfc5246.TLSRecordProtocol.sendNotDefinedRecordTypesWithCCSAndFinished"
     }
@@ -26,45 +26,36 @@ def test_result_valid(method_id: str, result: str):
 
     allowed_to_fully_fail = {}
 
-    failure_level = {
-        "STRICTLY_SUCCEEDED": 0,
-        "DISABLED": 1,
-        "CONCEPTUALLY_SUCCEEDED": 2,
-        "PARTIALLY_FAILED": 3,
-        "FULLY_FAILED": 4,
-    }
+    if method_id in allowed_to_fully_fail:
+        return failure_level["FULLY_FAILED"]
 
-    is_valid = False
+    if method_id in allowed_to_partially_fail:
+        return failure_level["PARTIALLY_FAILED"]
 
-    if result not in failure_level:
-        logging.error("Unknown result key: '%s'. Skipped...", result)
-        is_valid = True
+    if method_id in allowed_to_conceptually_succeed:
+        return failure_level["CONCEPTUALLY_SUCCEEDED"]
 
-    if failure_level[result] == failure_level["STRICTLY_SUCCEEDED"]:
-        is_valid = True
-    elif failure_level[result] <= failure_level["DISABLED"]:
-        is_valid = True
-    elif (
-        failure_level[result] <= failure_level["CONCEPTUALLY_SUCCEEDED"]
-        and method_id in allowed_to_conceptually_succeed
-    ):
-        is_valid = True
-    elif (
-        failure_level[result] <= failure_level["PARTIALLY_FAILED"]
-        and method_id in allowed_to_partially_fail
-    ):
-        is_valid = True
-    elif method_id in allowed_to_fully_fail:
-        is_valid = True
+    return failure_level["STRICTLY_SUCCEEDED"]
 
-    return is_valid
+
+def test_result_valid(method_id: str, result: str):
+    """
+    Checks if a results for a given method name is valid.
+
+    Return True iff the result is valid for the method.
+    """
+
+    if result == "DISABLED":
+        return True
+
+    return failure_level[result] <= expected_result_for(method_id)
 
 
 def failing_test_info(json_data, method_id) -> str:
     info_str = ""
     try:
         method_class, method_name = method_id.rsplit('.', 1)
-        info = [f"{method_name} - Unexpected result '{json_data['Result']}'"]
+        info = [f"::group::Error: {method_name} - Unexpected result '{json_data['Result']}'"]
         info += [""]
         info += [f"Class Name: 'de.rub.nds.tlstest.suite.tests.{method_class}'"]
         info += [f"Method Name: '{method_name}'"]
@@ -75,7 +66,8 @@ def failing_test_info(json_data, method_id) -> str:
             info += ["Custom Test Case:"]
         info += [f"{json_data['TestMethod']['Description']}"]
         info += [""]
-        info += [f"Result: {json_data['Result']}"]
+
+        info += [f"Result: {json_data['Result']} (expected {list(failure_level.keys())[list(failure_level.values()).index(expected_result_for(method_id))]})"]
         if json_data['DisabledReason'] is not None:
             info += [f"Disabled Reason: {json_data['DisabledReason']}"]
 
@@ -93,7 +85,10 @@ def failing_test_info(json_data, method_id) -> str:
         if len(additional_test_info) == 1:
             info += ["", f"Additional Test Info: {additional_test_info[0]}"]
         info += [""]
-        #info += ["::endgroup::"]
+        # Color in red
+        info = [f"\033[0;31m{line}\033[0m" for line in info]
+
+        info += ["::endgroup::"]
 
         info_str = "\n".join(info)
 
@@ -126,11 +121,8 @@ def process_results_container(results_container_path: str):
                 logging.debug("%s: '%s' -> ok", method_id, result)
                 success = True
             else:
-                red='\033[0;31m'
-                no_col='\033[0m' # No Color
-                #logging.info("%s: Unexpected result '%s'.\n\n%s", method_id, result, failing_test_info(json_data))
-                logging.error(f"::group::{red}Error: {failing_test_info(json_data, method_id)}{no_col}\n::endgroup::")
-
+                # Print a GitHub logging group in red
+                logging.error(failing_test_info(json_data, method_id))
 
         except KeyError:
             logging.error("Json file '%s' has missing entries.", results_container_path)
@@ -151,7 +143,6 @@ def main(args=None):
 
     logging.basicConfig(
         level=(logging.DEBUG if args["verbose"] else logging.INFO),
-        #format="[%(levelname)s] %(message)s\n",
         format="%(message)s",
     )
 
