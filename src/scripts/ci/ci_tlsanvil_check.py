@@ -60,16 +60,22 @@ def test_result_valid(method_id: str, result: str):
     return is_valid
 
 
-def failing_test_info(json_data) -> str:
+def failing_test_info(json_data, method_id) -> str:
     info_str = ""
     try:
-        info = []
+        method_class, method_name = method_id.rsplit('.', 1)
+        info = [f"::group::{method_name} - Unexpected result '{json_data['Result']}'"]
+        info += [""]
+        info += [f"Class Name: 'de.rub.nds.tlstest.suite.tests.{method_class}'"]
+        info += [f"Method Name: '{method_name}'"]
+        info += [""]
         if json_data['TestMethod']['RFC'] is not None:
             info += [ f"RFC {json_data['TestMethod']['RFC']['number']}, Section {json_data['TestMethod']['RFC']['Section']}:"]
         else:
             info += ["Custom Test Case:"]
         info += [f"{json_data['TestMethod']['Description']}"]
-        info += ["", f"Result: {json_data['Result']}"]
+        info += [""]
+        info += [f"Result: {json_data['Result']}"]
         if json_data['DisabledReason'] is not None:
             info += [f"Disabled Reason: {json_data['DisabledReason']}"]
 
@@ -86,6 +92,8 @@ def failing_test_info(json_data) -> str:
 
         if len(additional_test_info) == 1:
             info += ["", f"Additional Test Info: {additional_test_info[0]}"]
+        info += [""]
+        info += ["::endgroup::"]
 
         info_str = "\n".join(info)
 
@@ -119,7 +127,8 @@ def process_results_container(results_container_path: str):
                 success = True
             else:
                 #logging.info("%s: Unexpected result '%s'.\n\n%s", method_id, result, failing_test_info(json_data))
-                print(f"::group::{method_id}: Unexpected result '{result}'{failing_test_info(json_data)}\n::endgroup::", file=sys.stderr)
+                print(failing_test_info(json_data, method_id), file=sys.stderr)
+
 
         except KeyError:
             logging.error("Json file '%s' has missing entries.", results_container_path)
