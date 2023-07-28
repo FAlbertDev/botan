@@ -64,7 +64,7 @@ def failing_test_info(json_data, method_id) -> str:
     info_str = ""
     try:
         method_class, method_name = method_id.rsplit('.', 1)
-        info = [f"::group::Error: {method_name} - Unexpected result '{json_data['Result']}'"]
+        info = [f"{method_name} - Unexpected result '{json_data['Result']}'"]
         info += [""]
         info += [f"Class Name: 'de.rub.nds.tlstest.suite.tests.{method_class}'"]
         info += [f"Method Name: '{method_name}'"]
@@ -93,7 +93,7 @@ def failing_test_info(json_data, method_id) -> str:
         if len(additional_test_info) == 1:
             info += ["", f"Additional Test Info: {additional_test_info[0]}"]
         info += [""]
-        info += ["::endgroup::"]
+        #info += ["::endgroup::"]
 
         info_str = "\n".join(info)
 
@@ -127,7 +127,7 @@ def process_results_container(results_container_path: str):
                 success = True
             else:
                 #logging.info("%s: Unexpected result '%s'.\n\n%s", method_id, result, failing_test_info(json_data))
-                print(failing_test_info(json_data, method_id), file=sys.stderr)
+                logging.error(failing_test_info(json_data, method_id))
 
 
         except KeyError:
