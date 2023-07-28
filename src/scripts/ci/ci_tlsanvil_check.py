@@ -55,7 +55,7 @@ def failing_test_info(json_data, method_id) -> str:
     info_str = ""
     try:
         method_class, method_name = method_id.rsplit('.', 1)
-        info = [f"::group::Error: {method_name} - Unexpected result '{json_data['Result']}'"]
+        info = [f"Error: {method_name} - Unexpected result '{json_data['Result']}'"]
         info += [""]
         info += [f"Class Name: 'de.rub.nds.tlstest.suite.tests.{method_class}'"]
         info += [f"Method Name: '{method_name}'"]
@@ -85,12 +85,16 @@ def failing_test_info(json_data, method_id) -> str:
         if len(additional_test_info) == 1:
             info += ["", f"Additional Test Info: {additional_test_info[0]}"]
         info += [""]
+
         # Color in red
         info = [f"\033[0;31m{line}\033[0m" for line in info]
 
-        info += ["::endgroup::"]
-
         info_str = "\n".join(info)
+
+        # In GitHub Actions logging group
+        info_str = f"::group::{info_str}\n::endgroup::"
+
+
 
 
     except KeyError:
