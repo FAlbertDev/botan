@@ -129,7 +129,7 @@ def process_results_container(results_container_path: str):
                 red='\033[0;31m'
                 no_col='\033[0m' # No Color
                 #logging.info("%s: Unexpected result '%s'.\n\n%s", method_id, result, failing_test_info(json_data))
-                logging.error(f"{red}Error: {failing_test_info(json_data, method_id)}{no_col}")
+                logging.error(f"::group::{red}Error: {failing_test_info(json_data, method_id)}{no_col}\n::endgroup::")
 
 
         except KeyError:
@@ -152,7 +152,7 @@ def main(args=None):
     logging.basicConfig(
         level=(logging.DEBUG if args["verbose"] else logging.INFO),
         #format="[%(levelname)s] %(message)s\n",
-        format="::group::%(message)s\n::endgroup::",
+        format="%(message)s",
     )
 
     results_dir = args["results-dir"]
