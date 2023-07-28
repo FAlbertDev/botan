@@ -119,7 +119,7 @@ def process_results_container(results_container_path: str):
                 success = True
             else:
                 #logging.info("%s: Unexpected result '%s'.\n\n%s", method_id, result, failing_test_info(json_data))
-                print(f"::group::{method_id}: Unexpected result '{result}'{failing_test_info(json_data)}\n::endgroup::")
+                print(f"::group::{method_id}: Unexpected result '{result}'{failing_test_info(json_data)}\n::endgroup::", file=sys.stderr)
 
         except KeyError:
             logging.error("Json file '%s' has missing entries.", results_container_path)
