@@ -64,7 +64,7 @@ def failing_test_info(json_data, method_id) -> str:
     info_str = ""
     try:
         method_class, method_name = method_id.rsplit('.', 1)
-        info = [f"::group::{method_name} - Unexpected result '{json_data['Result']}'"]
+        info = [f"::group::Error: {method_name} - Unexpected result '{json_data['Result']}'"]
         info += [""]
         info += [f"Class Name: 'de.rub.nds.tlstest.suite.tests.{method_class}'"]
         info += [f"Method Name: '{method_name}'"]
