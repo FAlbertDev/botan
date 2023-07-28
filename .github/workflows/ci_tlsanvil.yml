@@ -10,7 +10,7 @@ permissions:
 
 on:
   push:
-     branches: [ master, ci/tls-anvil ] # !!!TODO!!! remove me!!!
+     branches: [ master, ci/tls-anvil, ci_experiment ] # !!!TODO!!! remove me!!!
   pull_request:
      branches: [ master ]
 
@@ -25,52 +25,52 @@ jobs:
       - name: Fetch Botan Repository
         uses: actions/checkout@v3
 
-      - name: Setup Build Agent
-        uses: ./.github/actions/setup-build-agent
-        with:
-          target: static
-          cache-key: linux-clang-x86_64-static
+      # - name: Setup Build Agent
+      #   uses: ./.github/actions/setup-build-agent
+      #   with:
+      #     target: static
+      #     cache-key: linux-clang-x86_64-static
 
-      - name: Build Botan
-        run: ./configure.py --compiler-cache=ccache --build-targets=static,cli --without-documentation && make -j8
+      # - name: Build Botan
+      #   run: ./configure.py --compiler-cache=ccache --build-targets=static,cli --without-documentation && make -j8
 
-      # - name: Tmp - Test Botan Executable
-      #   run: ./botan --help
+      # # - name: Tmp - Test Botan Executable
+      # #   run: ./botan --help
 
-      # - name: Build and Test Botan
-      #   run: python3 ./src/scripts/ci_build.py --cc='clang' --test-results-dir=junit_results shared
-      - name: Install Java and Maven
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'zulu'
+      # # - name: Build and Test Botan
+      # #   run: python3 ./src/scripts/ci_build.py --cc='clang' --test-results-dir=junit_results shared
+      # - name: Install Java and Maven
+      #   uses: actions/setup-java@v3
+      #   with:
+      #     java-version: '11'
+      #     distribution: 'zulu'
 
-      - name: Fetch TLS-Anvil fork for Botan tests
-        uses: actions/checkout@v3
-        with:
-          repository: FAlbertDev/TLS-Anvil
-          path: ./tlsanvil
+      # - name: Fetch TLS-Anvil fork for Botan tests
+      #   uses: actions/checkout@v3
+      #   with:
+      #     repository: FAlbertDev/TLS-Anvil
+      #     path: ./tlsanvil
 
-      - name: Build TLS-Anvil
-        working-directory: ./tlsanvil/
-        run: mvn install -DskipTests -Dspotless.apply.skip
-
-      # - name: Temp - Execute TLS-Anvil
+      # - name: Build TLS-Anvil
       #   working-directory: ./tlsanvil/
-      #   run: java -jar ./TLS-Testsuite/apps/TLS-Testsuite.jar -help
+      #   run: mvn install -DskipTests -Dspotless.apply.skip
 
-      - name: Test Botan Server with TLS-Anvil
-        run: python3 ./src/scripts/ci/ci_tlsanvil_test.py --server-test ./botan ./tlsanvil/TLS-Testsuite/apps/TLS-Testsuite.jar
-        env:
-          # TLS-Anvil env to disable the loading bar
-          DOCKER: 1
+      # # - name: Temp - Execute TLS-Anvil
+      # #   working-directory: ./tlsanvil/
+      # #   run: java -jar ./TLS-Testsuite/apps/TLS-Testsuite.jar -help
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: tls-anvil-server-test-results
-          path: |
-            ./TestSuiteResults/
-            ./logs/
+      # - name: Test Botan Server with TLS-Anvil
+      #   run: python3 ./src/scripts/ci/ci_tlsanvil_test.py --server-test ./botan ./tlsanvil/TLS-Testsuite/apps/TLS-Testsuite.jar
+      #   env:
+      #     # TLS-Anvil env to disable the loading bar
+      #     DOCKER: 1
+
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: tls-anvil-server-test-results
+      #     path: |
+      #       ./TestSuiteResults/
+      #       ./logs/
 
       - name: Check TLS-Anvil Test Results
-        run: python3 ./src/scripts/ci/ci_tlsanvil_check.py --verbose ./TestSuiteResults
+        run: python3 ./src/scripts/ci/ci_tlsanvil_check.py --verbose ./TestSuiteResults_Botan_Server
