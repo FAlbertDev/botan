@@ -149,7 +149,8 @@ def main(args=None):
 
     logging.basicConfig(
         level=(logging.DEBUG if args["verbose"] else logging.INFO),
-        format="[%(levelname)s] %(message)s\n",
+        #format="[%(levelname)s] %(message)s\n",
+        format="%(message)s\n",
     )
 
     results_dir = args["results-dir"]
