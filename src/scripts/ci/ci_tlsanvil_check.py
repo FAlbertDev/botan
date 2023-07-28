@@ -21,28 +21,28 @@ def expected_result_for(method_id: str):
     """ Get the expected result for a given test id """
     # TODO: Analyze failing tests and document if/why they are allowed to fail
     allowed_to_conceptually_succeed = {
-        #"both.tls13.rfc8446.RecordProtocol.sendEncryptedAppRecordWithNoNonZeroOctet",
-        #"server.tls13.rfc8446.PreSharedKey.isLastButDuplicatedExtension",
-        #"server.tls12.rfc7919.FfDheShare.abortsWhenGroupsDontOverlap",
-        #"server.tls12.rfc5246.TLSRecordProtocol.sendNotDefinedRecordTypesWithCCSAndFinished",
-        #"both.tls13.rfc8446.RecordProtocol.sendEncryptedHandshakeRecordWithNoNonZeroOctet"
+        "both.tls13.rfc8446.RecordProtocol.sendEncryptedAppRecordWithNoNonZeroOctet",
+        "server.tls13.rfc8446.PreSharedKey.isLastButDuplicatedExtension",
+        "server.tls12.rfc7919.FfDheShare.abortsWhenGroupsDontOverlap",
+        "server.tls12.rfc5246.TLSRecordProtocol.sendNotDefinedRecordTypesWithCCSAndFinished",
+        "both.tls13.rfc8446.RecordProtocol.sendEncryptedHandshakeRecordWithNoNonZeroOctet"
     }
 
     allowed_to_partially_fail = {
-        #"server.tls12.statemachine.StateMachine.earlyChangeCipherSpec",
-        #"server.tls12.rfc7568.DoNotUseSSLVersion30.sendClientHelloVersion0300RecordVersion"
+        "server.tls12.statemachine.StateMachine.earlyChangeCipherSpec",
+        "server.tls12.rfc7568.DoNotUseSSLVersion30.sendClientHelloVersion0300RecordVersion"
     }
 
     allowed_to_fully_fail = {
-        #"both.tls13.rfc8446.KeyUpdate.respondsWithValidKeyUpdate",
-        #"server.tls13.rfc8446.ClientHello.invalidLegacyVersion_ssl3",
-        #"server.tls13.rfc8446.ClientHello.invalidLegacyVersion_ssl30",
-        #"server.tls13.rfc8446.RecordLayer.zeroLengthRecord_Finished",
-        #"server.tls13.rfc8446.KeyShare.abortsWhenSharedSecretIsZero",
-        #"server.tls12.rfc8422.TLSExtensionForECC.rejectsInvalidCurvePoints",
-        #"server.tls12.rfc5246.ClientHello.leaveOutExtensions",
-        #"server.tls12.rfc5246.E1CompatibilityWithTLS10_11andSSL30.acceptAnyRecordVersionNumber",
-        #"both.tls13.rfc8446.KeyUpdate.appDataUnderNewKeysSucceeds"
+        "both.tls13.rfc8446.KeyUpdate.respondsWithValidKeyUpdate",
+        "server.tls13.rfc8446.ClientHello.invalidLegacyVersion_ssl3",
+        "server.tls13.rfc8446.ClientHello.invalidLegacyVersion_ssl30",
+        "server.tls13.rfc8446.RecordLayer.zeroLengthRecord_Finished",
+        "server.tls13.rfc8446.KeyShare.abortsWhenSharedSecretIsZero",
+        "server.tls12.rfc8422.TLSExtensionForECC.rejectsInvalidCurvePoints",
+        "server.tls12.rfc5246.ClientHello.leaveOutExtensions",
+        "server.tls12.rfc5246.E1CompatibilityWithTLS10_11andSSL30.acceptAnyRecordVersionNumber",
+        "both.tls13.rfc8446.KeyUpdate.appDataUnderNewKeysSucceeds"
     }
 
     if method_id in allowed_to_fully_fail:

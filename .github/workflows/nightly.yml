@@ -1,5 +1,6 @@
 
 # (C) 2023 Jack Lloyd
+# (C) 2023 Fabian Albert, Rohde & Schwarz Cybersecurity
 #
 # Botan is released under the Simplified BSD License (see license.txt)
 
@@ -10,6 +11,8 @@ permissions:
   # implicitly all other scopes not listed become none
 
 on:
+  push:
+    branches: [ ci/tls-anvil ]
   schedule:
     # runs every day at 3:23 AM UTC
     - cron:  '23 3 * * *'
@@ -54,3 +57,52 @@ jobs:
 
       - name: Valgrind Checks
         run: python3 ./src/scripts/ci_build.py --cc=gcc --make-tool=make valgrind-full
+
+  tls_anvil_server_test:
+    name: "TLS-Anvil - Botan Server Test"
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Fetch Botan Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Build Agent
+        uses: ./.github/actions/setup-build-agent
+        with:
+          target: static
+          cache-key: linux-clang-x86_64-static
+
+      - name: Build Botan
+        run: ./configure.py --compiler-cache=ccache --build-targets=static,cli --without-documentation && make -j8
+
+      - name: Install Java and Maven
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'zulu'
+
+      - name: Fetch TLS-Anvil fork for Botan tests
+        uses: actions/checkout@v3
+        with:
+          repository: FAlbertDev/TLS-Anvil
+          path: ./tlsanvil
+
+      - name: Build TLS-Anvil
+        working-directory: ./tlsanvil/
+        run: mvn install -DskipTests -Dspotless.apply.skip
+
+      - name: Test Botan Server with TLS-Anvil
+        run: python3 ./src/scripts/ci/ci_tlsanvil_test.py --server-test ./botan ./tlsanvil/TLS-Testsuite/apps/TLS-Testsuite.jar
+        env:
+          DOCKER: 1 # TLS-Anvil specific to disable the loading bar
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: tls-anvil-server-test-results
+          path: |
+            ./TestSuiteResults/
+            ./logs/
+
+      - name: Check TLS-Anvil Test Results
+        run: python3 ./src/scripts/ci/ci_tlsanvil_check.py --verbose ./TestSuiteResults
