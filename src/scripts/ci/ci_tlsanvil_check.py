@@ -8,47 +8,65 @@ import os
 import json
 import logging
 
-failure_level = {
+result_level = {
     "STRICTLY_SUCCEEDED": 0,
-    "DISABLED": 1,
-    "CONCEPTUALLY_SUCCEEDED": 2,
-    "PARTIALLY_FAILED": 3,
-    "FULLY_FAILED": 4,
+    "CONCEPTUALLY_SUCCEEDED": 1,
+    "PARTIALLY_FAILED": 2,
+    "FULLY_FAILED": 3,
 }
 
 def expected_result_for(method_id: str):
     """ Get the expected result for a given test id """
+    # TODO: Analyze failing tests and document if/why they are allowed to fail
     allowed_to_conceptually_succeed = {
-        #    "client.tls12.rfc5246.TLSRecordProtocol.sendNotDefinedRecordTypesWithCCSAndFinished"
+        #"both.tls13.rfc8446.RecordProtocol.sendEncryptedAppRecordWithNoNonZeroOctet",
+        #"server.tls13.rfc8446.PreSharedKey.isLastButDuplicatedExtension",
+        #"server.tls12.rfc7919.FfDheShare.abortsWhenGroupsDontOverlap",
+        #"server.tls12.rfc5246.TLSRecordProtocol.sendNotDefinedRecordTypesWithCCSAndFinished",
+        #"both.tls13.rfc8446.RecordProtocol.sendEncryptedHandshakeRecordWithNoNonZeroOctet"
     }
 
-    allowed_to_partially_fail = {}
+    allowed_to_partially_fail = {
+        #"server.tls12.statemachine.StateMachine.earlyChangeCipherSpec",
+        #"server.tls12.rfc7568.DoNotUseSSLVersion30.sendClientHelloVersion0300RecordVersion"
+    }
 
-    allowed_to_fully_fail = {}
+    allowed_to_fully_fail = {
+        #"both.tls13.rfc8446.KeyUpdate.respondsWithValidKeyUpdate",
+        #"server.tls13.rfc8446.ClientHello.invalidLegacyVersion_ssl3",
+        #"server.tls13.rfc8446.ClientHello.invalidLegacyVersion_ssl30",
+        #"server.tls13.rfc8446.RecordLayer.zeroLengthRecord_Finished",
+        #"server.tls13.rfc8446.KeyShare.abortsWhenSharedSecretIsZero",
+        #"server.tls12.rfc8422.TLSExtensionForECC.rejectsInvalidCurvePoints",
+        #"server.tls12.rfc5246.ClientHello.leaveOutExtensions",
+        #"server.tls12.rfc5246.E1CompatibilityWithTLS10_11andSSL30.acceptAnyRecordVersionNumber",
+        #"both.tls13.rfc8446.KeyUpdate.appDataUnderNewKeysSucceeds"
+    }
 
     if method_id in allowed_to_fully_fail:
-        return failure_level["FULLY_FAILED"]
+        return result_level["FULLY_FAILED"]
 
     if method_id in allowed_to_partially_fail:
-        return failure_level["PARTIALLY_FAILED"]
+        return result_level["PARTIALLY_FAILED"]
 
     if method_id in allowed_to_conceptually_succeed:
-        return failure_level["CONCEPTUALLY_SUCCEEDED"]
+        return result_level["CONCEPTUALLY_SUCCEEDED"]
 
-    return failure_level["STRICTLY_SUCCEEDED"]
+    return result_level["STRICTLY_SUCCEEDED"]
 
 
 def test_result_valid(method_id: str, result: str):
     """
-    Checks if a results for a given method name is valid.
-
     Return True iff the result is valid for the method.
     """
-
     if result == "DISABLED":
         return True
 
-    return failure_level[result] <= expected_result_for(method_id)
+    expected_res = expected_result_for(method_id)
+    if result_level[result] < expected_res:
+        logging.warning("Warning: Test result better than expected for '%s'. Consider tighten the expectation.", method_id)
+
+    return result_level[result] <= expected_result_for(method_id)
 
 
 def failing_test_info(json_data, method_id) -> str:
@@ -67,7 +85,7 @@ def failing_test_info(json_data, method_id) -> str:
         info += [f"{json_data['TestMethod']['Description']}"]
         info += [""]
 
-        info += [f"Result: {json_data['Result']} (expected {list(failure_level.keys())[list(failure_level.values()).index(expected_result_for(method_id))]})"]
+        info += [f"Result: {json_data['Result']} (expected {list(result_level.keys())[list(result_level.values()).index(expected_result_for(method_id))]})"]
         if json_data['DisabledReason'] is not None:
             info += [f"Disabled Reason: {json_data['DisabledReason']}"]
 
@@ -174,7 +192,6 @@ def main(args=None):
     logging.info("Total result: %s", "Success." if total_success else "Failed.")
 
     return int(not total_success)
-
 
 if __name__ == "__main__":
     sys.exit(main())
