@@ -127,7 +127,7 @@ def process_results_container(results_container_path: str):
                 success = True
             else:
                 #logging.info("%s: Unexpected result '%s'.\n\n%s", method_id, result, failing_test_info(json_data))
-                logging.error(failing_test_info(json_data, method_id))
+                logging.error(f"Error: {failing_test_info(json_data, method_id)}")
 
 
         except KeyError:
