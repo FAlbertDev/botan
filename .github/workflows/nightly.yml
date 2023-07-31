@@ -11,8 +11,6 @@ permissions:
   # implicitly all other scopes not listed become none
 
 on:
-  push:
-    branches: [ ci/tls-anvil ]
   schedule:
     # runs every day at 3:23 AM UTC
     - cron:  '23 3 * * *'
