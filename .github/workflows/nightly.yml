@@ -71,33 +71,15 @@ jobs:
           target: static
           cache-key: linux-gcc-x86_64-static
 
-      - name: Build Botan
-        run: ./configure.py --compiler-cache=ccache --build-targets=static,cli --without-documentation && make -j$(nproc)
+      - name: Install Boost
+        run: sudo apt-get -qq install libboost-dev
 
-      - name: Install Java and Maven
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'zulu'
-
-      - name: Fetch TLS-Anvil fork for Botan tests
-        uses: actions/checkout@v3
-        with:
-          repository: FAlbertDev/TLS-Anvil
-          path: ./tlsanvil
-
-      - name: Build TLS-Anvil
-        working-directory: ./tlsanvil/
-        run: mvn install -DskipTests -Dspotless.apply.skip
-
-      - name: Test Botan Server with TLS-Anvil
+      - name: Build and Test Botan Server with TLS-Anvil
         run: >
           python3 ./src/scripts/ci/ci_tlsanvil_test.py
-          --botan-exe ./botan
-          --tlsanvil-jar ./tlsanvil/TLS-Testsuite/apps/TLS-Testsuite.jar
+          --botan-dir .
           --test-target server
-        env:
-          DOCKER: 1 # TLS-Anvil specific to disable the loading bar
+          --parallel $(nproc)
 
       - uses: actions/upload-artifact@v3
         with:

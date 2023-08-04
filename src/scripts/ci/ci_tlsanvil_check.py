@@ -10,12 +10,14 @@ import os
 import json
 import logging
 
+
 result_level = {
     "STRICTLY_SUCCEEDED": 0,
     "CONCEPTUALLY_SUCCEEDED": 1,
     "PARTIALLY_FAILED": 2,
     "FULLY_FAILED": 3,
 }
+
 
 def expected_result_for(method_id: str):
     """ Get the expected result for a given test id """
@@ -72,6 +74,7 @@ def test_result_valid(method_id: str, result: str):
 
 
 def failing_test_info(json_data, method_id) -> str:
+    """ Print debug information about a failing test """
     info_str = ""
     try:
         method_class, method_name = method_id.rsplit('.', 1)
@@ -191,6 +194,7 @@ def main(args=None):
     logging.info("Total result: %s", "Success." if total_success else "Failed.")
 
     return int(not total_success)
+
 
 if __name__ == "__main__":
     sys.exit(main())
