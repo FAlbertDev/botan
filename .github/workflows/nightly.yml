@@ -69,10 +69,10 @@ jobs:
         uses: ./.github/actions/setup-build-agent
         with:
           target: static
-          cache-key: linux-clang-x86_64-static
+          cache-key: linux-gcc-x86_64-static
 
       - name: Build Botan
-        run: ./configure.py --compiler-cache=ccache --build-targets=static,cli --without-documentation && make -j8
+        run: ./configure.py --compiler-cache=ccache --build-targets=static,cli --without-documentation && make -j$(nproc)
 
       - name: Install Java and Maven
         uses: actions/setup-java@v3
@@ -91,7 +91,11 @@ jobs:
         run: mvn install -DskipTests -Dspotless.apply.skip
 
       - name: Test Botan Server with TLS-Anvil
-        run: python3 ./src/scripts/ci/ci_tlsanvil_test.py --server-test ./botan ./tlsanvil/TLS-Testsuite/apps/TLS-Testsuite.jar
+        run: >
+          python3 ./src/scripts/ci/ci_tlsanvil_test.py
+          --botan-exe ./botan
+          --tlsanvil-jar ./tlsanvil/TLS-Testsuite/apps/TLS-Testsuite.jar
+          --test-target server
         env:
           DOCKER: 1 # TLS-Anvil specific to disable the loading bar
 

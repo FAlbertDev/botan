@@ -34,7 +34,7 @@ def create_cert_and_key(botan_exe_path):
     cert_path = os.path.join(Config.key_and_cert_storage_path, Config.tmp_cert_file_name)
 
     with open(key_path, 'w', encoding='utf-8') as keyfile:
-        subprocess.run([botan_exe_path, "keygen", "--algo=RSA"], stdout=keyfile, check=True)
+        subprocess.run([botan_exe_path, "keygen", "--algo=RSA", "--params=2048"], stdout=keyfile, check=True)
 
     with open(cert_path, 'w', encoding='utf-8') as certfile:
         subprocess.run([botan_exe_path, "gen_self_signed", key_path, "localhost"], stdout=certfile, check=True)
@@ -77,37 +77,24 @@ def main(args=None):
         args = sys.argv[1:]
 
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--server-test",
-        action="store_true",
-        default=False,
-        help="Test the Botan TLS server",
-    )
-    parser.add_argument(
-        "--client-test",
-        action="store_true",
-        default=False,
-        help="Test the Botan TLS client",
-    )
-    parser.add_argument("botan-executable", help="botan executable file")
-    parser.add_argument("tlsanvil-jar-file", help="TLS-Anvil test suite jar file")
+    parser.add_argument("--botan-exe", help="Botan executable file", required=True)
+    parser.add_argument("--tlsanvil-jar", help="TLS-Anvil test suite jar file", required=True)
+    parser.add_argument("--test-target", help="The TLS side to test", choices=['client', 'server'], required=True)
 
     args = vars(parser.parse_args(args))
 
-    if args["server_test"] == args["client_test"]:
-        raise ValueError("Either 'server-test' or 'client-test' must be set")
+    if not os.path.isfile(args["tlsanvil_jar"]):
+        raise FileNotFoundError(f"Unable to find '{args['tlsanvil_jar']}'")
 
-    if not os.path.isfile(args["tlsanvil-jar-file"]):
-        raise FileNotFoundError(f"Unable to find '{args['tlsanvil-jar-file']}'")
+    if not os.path.isfile(args["botan_exe"]):
+        raise FileNotFoundError(f"Unable to find '{args['botan_exe']}'")
 
-    if not os.path.isfile(args["botan-executable"]):
-        raise FileNotFoundError(f"Unable to find '{args['botan-executable']}'")
+    if args["test_target"] == "server":
+        server_test(args["botan_exe"], args["tlsanvil_jar"])
+    elif args["test_target"] == "client":
+        client_test(args["botan_exe"], args["tlsanvil_jar"])
 
-    if args["server_test"]:
-        server_test(args["botan-executable"], args["tlsanvil-jar-file"])
-    else:
-        client_test(args["botan-executable"], args["tlsanvil-jar-file"])
-
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())
