@@ -12,7 +12,7 @@ permissions:
 
 on:
   push:
-    branches: [ master ]
+    branches: [ experimental/kmac-amalg-fix ]
   pull_request:
     branches: [ master ]
 
