@@ -70,7 +70,7 @@ jobs:
       - name: Setup Build Agent
         uses: ./.github/actions/setup-build-agent
         with:
-          target: static
+          target: tlsanvil
           cache-key: linux-x86_64-tlsanvil
 
       # - name: Install Boost
