@@ -26,6 +26,9 @@ if type -p "apt-get"; then
     elif [ "$TARGET" = "shared" ] || [ "$TARGET" = "examples" ] ; then
         sudo apt-get -qq install libboost-dev
 
+    elif [ "$TARGET" = "tlsanvil" ] || [ "$TARGET" = "examples" ] ; then
+        sudo apt-get -qq install libboost-dev
+
     elif [ "$TARGET" = "clang" ]; then
         sudo apt-get -qq install clang
 
