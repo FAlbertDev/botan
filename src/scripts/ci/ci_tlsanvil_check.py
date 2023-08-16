@@ -42,6 +42,8 @@ def expected_result_for(method_id: str):
         "server.tls13.rfc8446.RecordLayer.zeroLengthRecord_Finished",
         "server.tls13.rfc8446.KeyShare.abortsWhenSharedSecretIsZero",
         "server.tls12.rfc8422.TLSExtensionForECC.rejectsInvalidCurvePoints",
+        # Okay because: RFC 9155, Sec. 2: Clients MUST include the signature_algorithms extension.
+        #   -> does not break operability with valid clients
         "server.tls12.rfc5246.ClientHello.leaveOutExtensions",
         "server.tls12.rfc5246.E1CompatibilityWithTLS10_11andSSL30.acceptAnyRecordVersionNumber",
         "both.tls13.rfc8446.KeyUpdate.appDataUnderNewKeysSucceeds"
