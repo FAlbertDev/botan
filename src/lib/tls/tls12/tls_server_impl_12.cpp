@@ -131,6 +131,10 @@ uint16_t choose_ciphersuite(const Policy& policy,
    std::vector<uint16_t> pref_list = server_suites;
    std::vector<uint16_t> other_list = client_suites;
 
+   // Check if any groups match with the clients ones
+   policy.key_exchange_groups();
+   // Check within the loop ...
+
    if(!our_choice) {
       std::swap(pref_list, other_list);
    }
