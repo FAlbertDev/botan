@@ -61,7 +61,6 @@ std::vector<LMS_Tree_Node_Idx> derive_lms_leaf_indices_from_hss_index(HSS_Sig_Id
       HSS_Level layer(layer_ctr);
       const HSS_LMS_Params::LMS_LMOTS_Params_Pair& layer_params = hss_params.params_at_level(layer);
       size_t layer_h = layer_params.lms_params().h();
-      auto tmp = hss_idx.get();
       q.at(layer.get()) = LMS_Tree_Node_Idx(static_cast<uint32_t>(hss_idx.get() % (1UL << layer_h)));
       hss_idx = hss_idx >> layer_h;
    }
