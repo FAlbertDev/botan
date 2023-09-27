@@ -118,8 +118,6 @@ HSS_LMS_PrivateKey::HSS_LMS_PrivateKey(RandomNumberGenerator& rng, std::string_v
 HSS_LMS_PrivateKey::~HSS_LMS_PrivateKey() = default;
 
 secure_vector<uint8_t> HSS_LMS_PrivateKey::private_key_bits() const {
-   // TODO: Do we want to private some Botan scoped pkcs8_algorithm_identifier(), instead of re-using the public one?
-   // As the private key format is not specified, this would make sure we recognise our own encoding.
    return m_private->to_bytes();
 }
 
@@ -129,6 +127,13 @@ secure_vector<uint8_t> HSS_LMS_PrivateKey::raw_private_key_bits() const {
 
 std::unique_ptr<Public_Key> HSS_LMS_PrivateKey::public_key() const {
    return std::make_unique<HSS_LMS_PublicKey>(*this);
+}
+
+// We use a separate algorithm identifier for the private key since we use a Botan scoped OID for it.
+// This is necessary since the private key format is implementation specific, since it is not defined
+// in RFC 8554.
+AlgorithmIdentifier HSS_LMS_PrivateKey::pkcs8_algorithm_identifier() const {
+   return AlgorithmIdentifier(OID::from_string("HSS-LMS-Private-Key"), AlgorithmIdentifier::USE_EMPTY_PARAM);
 }
 
 class HSS_LMS_Signature_Operation final : public PK_Ops::Signature {

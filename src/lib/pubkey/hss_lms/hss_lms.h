@@ -148,6 +148,8 @@ class BOTAN_PUBLIC_API(3, 2) HSS_LMS_PrivateKey final : public virtual HSS_LMS_P
       secure_vector<uint8_t> raw_private_key_bits() const override;
       std::unique_ptr<Public_Key> public_key() const override;
 
+      AlgorithmIdentifier pkcs8_algorithm_identifier() const override;
+
       bool stateful_operation() const override { return true; }
 
       std::unique_ptr<PK_Ops::Signature> create_signature_op(RandomNumberGenerator& rng,
