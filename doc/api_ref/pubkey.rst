@@ -1010,3 +1010,42 @@ signature:
 
 .. literalinclude:: /../src/examples/xmss.cpp
    :language: cpp
+
+
+Hierarchical Signature System with Leighton-Micali Hash-Based Signatures (HSS-LMS)
+----------------------------------------------------------------------------------
+
+HSS-LMS is a stateful hash-based signature scheme which is defined in `RFC 8554
+"Leighton-Micali Hash-Based Signatures" <https://datatracker.ietf.org/doc/html/rfc8554>`_.
+
+It is a multitree scheme, which is highly configurable. Multitree means, it consists
+of multiple layers of Merkle trees, which can be defined individually. Moreover, the
+used hash function and the Winternitz Parameter of the underlying one-time signature
+can be chosen for each tree layer. For a sensible selection of parameters refer to
+`RFC 8554 Section 6.4. <https://datatracker.ietf.org/doc/html/rfc8554#section-6.4>`_.
+
+.. warning::
+
+   HSS-LMS is stateful, meaning the private key must be updated after
+   each signature. If the same private key is ever used to generate
+   two different signatures, then the scheme becomes insecure. For
+   this reason it can be challening to use HSS-LMS securely.
+
+HSS-LMS uses the Botan interfaces for public key cryptography. The ``params``
+argument of the HSS-LMS private key is used to define the parameter set.
+The syntax of this argument must be the following:
+
+``HSS-LMS(<hash>,HW(<h>,<w>),HW(<h>,<w>),...)``
+
+e.g. ``HSS-LMS(SHA-256,HW(5,1),HW(5,1))`` to use SHA-256 in a two-layer HSS instance
+with LMS tree hights 5 and Winternitz parameter 1. This results in a
+private key that can be used to create up to 2^(5+5)=1024 signatures.
+
+The following parameters are allowed (which are specified in
+`RFC 8554 <https://datatracker.ietf.org/doc/html/rfc8554>`_ and
+and `draft-fluhrer-lms-more-parm-sets-11 <https://datatracker.ietf.org/doc/html/draft-fluhrer-lms-more-parm-sets-11>`_):
+
+- hash: ``SHA-256``, ``Truncated(SHA-256,192)``, ``SHAKE-256(256)``, ``SHAKE-256(192)``
+- h: ``5``, ``10``, ``15``, ``20``, ``25``
+- w: ``1``, ``2``, ``4``, ``8``
+

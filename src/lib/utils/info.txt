@@ -45,6 +45,7 @@ safeint.h
 scan_name.h
 stl_util.h
 timer.h
+tree_hash.h
 </header:internal>
 
 <requires>
