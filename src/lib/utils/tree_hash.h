@@ -227,7 +227,7 @@ inline void compute_root(
    concepts::tree_hash_node_pair<TreeNodeIndex, TreeLayerIndex, Address, StrongSpan<TreeNode>> auto node_pair_hash,
    Address& tree_address) {
    BOTAN_ASSERT_NOMSG(out_root.size() == node_size);
-   BOTAN_ASSERT_NOMSG(authentication_path.size() == node_size * total_tree_height);
+   BOTAN_ASSERT_NOMSG(authentication_path.size() == node_size * static_cast<size_t>(total_tree_height.get()));
    BOTAN_ASSERT_NOMSG(leaf.size() == node_size);
 
    // Use the `out` parameter as intermediate buffer for left/right nodes
