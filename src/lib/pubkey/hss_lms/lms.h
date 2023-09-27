@@ -222,7 +222,7 @@ class BOTAN_TEST_API LMS_PublicKey : public LMS_Instance {
       /**
        * @brief Parse a public LMS key.
        *
-       * @param key_bytes The public key bytes to parse.
+       * @param slicer The BufferSlicer at the public key bytes' position
        * @return The LMS public key.
        * @throws Decoding_Error If parsing the public key fails.
        */

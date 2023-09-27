@@ -129,7 +129,6 @@ class BOTAN_TEST_API HSS_LMS_PrivateKeyInternal final {
        *
        * @param hss_params The HSS-LMS parameters for the key.
        * @param rng The rng to use.
-       * @return The internal HSS-LMS private key.
        */
       HSS_LMS_PrivateKeyInternal(const HSS_LMS_Params& hss_params, RandomNumberGenerator& rng);
 
@@ -171,8 +170,6 @@ class BOTAN_TEST_API HSS_LMS_PrivateKeyInternal final {
        * if applications create multiple signatures in one go.
        *
        * @param msg The message to sign.
-       * @param rng The rng to use.
-       * @return The HSS-LMS signature.
        */
       secure_vector<uint8_t> sign(std::span<const uint8_t> msg);
 
@@ -215,7 +212,7 @@ class BOTAN_TEST_API HSS_LMS_PrivateKeyInternal final {
        *
        * We use the same generation as the reference implementation (https://github.com/cisco/hash-sigs).
        *
-       * @param child_lms_params The LMS parameters of the child tree.
+       * @param child_lms_lmots_params The LMS-LMOTS parameter pair of the child tree.
        * @param parent_sk The parent's LMS private key
        * @param parent_q The LMS leaf number the child tree has in its parent tree.
        * @return LMS private key

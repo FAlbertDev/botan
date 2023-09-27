@@ -30,6 +30,7 @@ enabled_checks = [
     'cert-*',
     'clang-analyzer-*',
     'cppcoreguidelines-*',
+    'clang-diagnostic-*',
     'hicpp-*',
     'misc-*',
     'modernize-*',
@@ -46,6 +47,7 @@ disabled_needs_work = [
     'bugprone-lambda-function-name', # should be an easy fix
     'bugprone-unchecked-optional-access', # clang-tidy seems buggy (many false positives)
     'cert-err58-cpp', # many false positives eg __m128i
+    'cppcoreguidelines-avoid-do-while',
     'cppcoreguidelines-init-variables',
     'cppcoreguidelines-owning-memory',
     'cppcoreguidelines-prefer-member-initializer',
@@ -91,6 +93,7 @@ disabled_not_interested = [
     'hicpp-vararg', # idiocy
     'hicpp-signed-bitwise', # impossible to avoid in C/C++, int promotion rules :/
     'misc-no-recursion',
+    'misc-include-cleaner',
     'modernize-loop-convert', # sometimes very ugly
     'modernize-raw-string-literal', # usually less readable
     'modernize-use-trailing-return-type', # fine, but we're not using it everywhere
