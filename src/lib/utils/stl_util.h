@@ -17,9 +17,11 @@
 #include <variant>
 #include <vector>
 
+#include <botan/assert.h>
 #include <botan/concepts.h>
 #include <botan/secmem.h>
 #include <botan/strong_type.h>
+#include <botan/internal/loadstor.h>
 
 namespace Botan {
 
@@ -150,6 +152,11 @@ class BufferSlicer final {
          std::copy(data.begin(), data.end(), sink.begin());
       }
 
+      template <typename T>
+      auto copy_be() {
+         return load_be<T>(take(sizeof(T)).data(), 0);
+      }
+
       void skip(const size_t count) { take(count); }
 
       size_t remaining() const { return m_remaining.size(); }
@@ -198,6 +205,11 @@ class BufferStuffer {
          std::copy(buffer.begin(), buffer.end(), sink.begin());
       }
 
+      template <typename T>
+      auto append_be(T value) {
+         return store_be(value, next(sizeof(T)).data());
+      }
+
       bool full() const { return m_buffer.empty(); }
 
       size_t remaining_capacity() const { return m_buffer.size(); }
@@ -205,6 +217,17 @@ class BufferStuffer {
    private:
       std::span<uint8_t> m_buffer;
 };
+
+/**
+ * @brief Size guarded copy using spans.
+ *
+ * @param out output buffer
+ * @param in input buffer
+ */
+inline void copy_into(std::span<uint8_t> out, std::span<const uint8_t> in) {
+   BOTAN_ASSERT_NOMSG(in.size() == out.size());
+   std::copy(in.begin(), in.end(), out.begin());
+}
 
 /**
  * Concatenate an arbitrary number of buffers.

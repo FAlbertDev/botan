@@ -9,6 +9,7 @@
 #ifndef BOTAN_LOAD_STORE_H_
 #define BOTAN_LOAD_STORE_H_
 
+#include <botan/concepts.h>
 #include <botan/mem_ops.h>
 #include <botan/types.h>
 #include <botan/internal/bswap.h>
@@ -226,6 +227,28 @@ inline constexpr uint64_t load_le<uint64_t>(const uint8_t in[], size_t off) {
 #else
    return make_uint64(in[7], in[6], in[5], in[4], in[3], in[2], in[1], in[0]);
 #endif
+}
+
+/**
+* Load a big-endian strong type value
+* @param in a pointer to some bytes
+* @param off an offset into the array
+* @return off'th strong type of in, as a big-endian value
+*/
+template <concepts::strong_type T>
+inline constexpr T load_be(const uint8_t in[], size_t off) {
+   return static_cast<T>(load_be<typename T::wrapped_type>(in, off));
+}
+
+/**
+* Load a big-endian enum value
+* @param in a pointer to some bytes
+* @param off an offset into the array
+* @return off'th enum of in, as a big-endian value
+*/
+template <concepts::enum_type T>
+inline constexpr T load_be(const uint8_t in[], size_t off) {
+   return static_cast<T>(load_be<std::underlying_type_t<T>>(in, off));
 }
 
 /**
@@ -491,6 +514,26 @@ inline constexpr void store_le(uint64_t in, uint8_t out[8]) {
    out[6] = get_byte<1>(in);
    out[7] = get_byte<0>(in);
 #endif
+}
+
+/**
+* Store a big-endian strong type value
+* @param in the input
+* @param out the byte array to write to
+*/
+template <concepts::strong_type T>
+inline constexpr void store_be(T in, uint8_t out[8]) {
+   store_be(in.get(), out);
+}
+
+/**
+* Store a big-endian enum value
+* @param in the input
+* @param out the byte array to write to
+*/
+template <concepts::enum_type T>
+inline constexpr void store_be(T in, uint8_t out[8]) {
+   store_be(static_cast<std::underlying_type_t<T>>(in), out);
 }
 
 /**

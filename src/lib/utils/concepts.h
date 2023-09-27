@@ -117,11 +117,39 @@ concept strong_type = is_strong_type_v<T>;
 template <class T>
 concept contiguous_strong_type = strong_type<T> && contiguous_container<T>;
 
+template <typename T, typename Capability>
+concept is_strong_type_with_capability = requires(T a) {
+                                            {
+                                               strong_type_has_capability<Capability>(a)
+                                               } -> std::same_as<std::true_type>;
+                                         };
+
 // std::integral is a concept that is shipped with C++20 but Android NDK is not
 // yet there.
 // TODO: C++20 - replace with std::integral
 template <typename T>
 concept integral = std::is_integral_v<T>;
+
+template <typename T>
+concept enum_type = std::is_enum_v<T>;
+
+}  // namespace concepts
+
+template <concepts::contiguous_strong_type>
+class StrongSpan;
+
+template <typename>
+struct is_strong_span : std::false_type {};
+
+template <typename T>
+struct is_strong_span<StrongSpan<T>> : std::true_type {};
+
+template <typename T>
+constexpr bool is_strong_span_v = is_strong_span<T>::value;
+
+namespace concepts {
+template <typename T>
+concept strong_span = is_strong_span_v<T>;
 
 }  // namespace concepts
 
