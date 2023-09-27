@@ -68,7 +68,7 @@ class HSS_LMS_Verification_Operation final : public PK_Ops::Verification {
             const auto signature = HSS_Signature::from_bytes_or_throw({sig, sig_len});
             bool sig_valid = m_public->verify_signature(message_to_verify, signature);
             return sig_valid;
-         } catch(const Decoding_Error& e) {
+         } catch(const Decoding_Error&) {
             // Signature could not be decoded
             return false;
          }
