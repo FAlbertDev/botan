@@ -57,11 +57,12 @@ constexpr bool is_supported_hash_function(std::string_view hash_name) {
 std::vector<LMS_Tree_Node_Idx> derive_lms_leaf_indices_from_hss_index(HSS_Sig_Idx hss_idx,
                                                                       const HSS_LMS_Params& hss_params) {
    std::vector<LMS_Tree_Node_Idx> q(hss_params.L().get());
-   for(int8_t layer_ctr = hss_params.L().get() - 1; layer_ctr >= 0; --layer_ctr) {
+   for(int32_t layer_ctr = hss_params.L().get() - 1; layer_ctr >= 0; --layer_ctr) {
       HSS_Level layer(layer_ctr);
       const HSS_LMS_Params::LMS_LMOTS_Params_Pair& layer_params = hss_params.params_at_level(layer);
       size_t layer_h = layer_params.lms_params().h();
-      q.at(layer.get()) = LMS_Tree_Node_Idx(hss_idx.get() % (1UL << layer_h));
+      auto tmp = hss_idx.get();
+      q.at(layer.get()) = LMS_Tree_Node_Idx(static_cast<uint32_t>(hss_idx.get() % (1UL << layer_h)));
       hss_idx = hss_idx >> layer_h;
    }
    BOTAN_ARG_CHECK(hss_idx == HSS_Sig_Idx(0), "HSS Tree is exhausted");

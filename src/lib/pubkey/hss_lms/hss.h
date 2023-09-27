@@ -37,7 +37,7 @@ using HSS_Level = Strong<uint32_t, struct HSS_Level_, EnableArithmeticWithPlainN
  *
  * See RFC 8554 Section 6.
  */
-class HSS_LMS_Params final {
+class BOTAN_TEST_API HSS_LMS_Params final {
    public:
       /**
        * @brief Represents a pair of LMS and LMOTS parameters associated with one LMS tree layer.
@@ -99,7 +99,7 @@ class HSS_LMS_Params final {
       /**
        * @brief Returns the number of layers the HSS tree has.
        */
-      HSS_Level L() const { return static_cast<HSS_Level>(m_lms_lmots_params.size()); }
+      HSS_Level L() const { return HSS_Level(m_lms_lmots_params.size()); }
 
       /**
        * @brief The maximal number of signatures allowed for these HSS parameters
@@ -122,7 +122,7 @@ class HSS_LMS_Params final {
  * Note that the format is not specified in the RFC 8554,
  * and is Botan specific.
  */
-class HSS_LMS_PrivateKeyInternal final {
+class BOTAN_TEST_API HSS_LMS_PrivateKeyInternal final {
    public:
       /**
        * @brief Create an internal HSS-LMS private key.
@@ -239,7 +239,7 @@ class HSS_Signature;
  * Format according to RFC 8554:
  * u32str(L) || pub[0]
  */
-class HSS_LMS_PublicKeyInternal final {
+class BOTAN_TEST_API HSS_LMS_PublicKeyInternal final {
    public:
       /**
        * @brief Create the public HSS-LMS key from its private key.
@@ -318,7 +318,7 @@ class HSS_LMS_PublicKeyInternal final {
  * Format according to RFC 8554:
  * u32str(Nspk) || sig[0] || pub[1] || ... || sig[Nspk-1] || pub[Nspk] || sig[Nspk]
  */
-class HSS_Signature final {
+class BOTAN_TEST_API HSS_Signature final {
    public:
       /**
        * @brief A LMS public key signed by the HSS layer above it.

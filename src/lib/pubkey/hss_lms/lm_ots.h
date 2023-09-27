@@ -99,7 +99,7 @@ enum class LMOTS_Algorithm_Type : uint32_t {
  *
  * See RFC 8554 Section 4.1.
  */
-class LMOTS_Params {
+class BOTAN_TEST_API LMOTS_Params {
    public:
       /**
        * @brief Create the LM-OTS parameters from a known algorithm type.
@@ -172,7 +172,7 @@ class LMOTS_Params {
 /**
  * @brief Representation of a LM-OTS signature.
  */
-class LMOTS_Signature {
+class BOTAN_TEST_API LMOTS_Signature {
    public:
       /**
        * @brief Parse a LM-OTS signature.
@@ -216,7 +216,7 @@ class LMOTS_Signature {
  * @brief Base class for LMOTS private and public key. Contains the parameters for
  *        the specific OTS instance
  */
-class OTS_Instance {
+class BOTAN_TEST_API OTS_Instance {
    public:
       /**
        * @brief Constructor storing the specific OTS parameters
@@ -251,7 +251,7 @@ class OTS_Instance {
  * Contains the OTS params, I, q, the secret LMS seed and its derived
  * secret chain inputs (x[] in RFC 8554 4.2)
  */
-class LMOTS_Private_Key : public OTS_Instance {
+class BOTAN_TEST_API LMOTS_Private_Key : public OTS_Instance {
    public:
       /**
        * @brief Derive a LMOTS private key for a given @p seed.
@@ -300,7 +300,7 @@ class LMOTS_Private_Key : public OTS_Instance {
  *
  * u32str(type) || I || u32str(q) || K
  */
-class LMOTS_Public_Key : public OTS_Instance {
+class BOTAN_TEST_API LMOTS_Public_Key : public OTS_Instance {
    public:
       /**
        * @brief Derivivation of an LMOTS public key using an LMOTS_Private_Key as defined
