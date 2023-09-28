@@ -114,7 +114,7 @@ class BOTAN_TEST_API LMOTS_Params {
        * @param w the width (in bits) of the Winternitz coefficients.
        * @throws Decoding_Error If the algorithm type is unknown
        */
-      static LMOTS_Params create_or_throw(std::string_view hash_name, size_t w);
+      static LMOTS_Params create_or_throw(std::string_view hash_name, uint8_t w);
 
       /**
        * @brief Returns the LM-OTS algorithm type.

@@ -132,7 +132,7 @@ LMOTS_Params LMOTS_Params::create_or_throw(LMOTS_Algorithm_Type type) {
    throw Decoding_Error("Unsupported LM-OTS algorithm type");
 }
 
-LMOTS_Params LMOTS_Params::create_or_throw(std::string_view hash_name, size_t w) {
+LMOTS_Params LMOTS_Params::create_or_throw(std::string_view hash_name, uint8_t w) {
    BOTAN_ARG_CHECK(w == 1 || w == 2 || w == 4 || w == 8, "Invalid w value");
    auto type_offset = high_bit(w) - 1;
    LMOTS_Algorithm_Type base_type;
