@@ -33,7 +33,7 @@ concept tree_node = contiguous_container<T>;
  * The left most node of a layer has the index 0.
  */
 template <typename T>
-concept tree_node_index = is_strong_type_with_capability<T, EnableArithmeticWithPlainNumber>;
+concept tree_node_index = strong_type_with_capability<T, EnableArithmeticWithPlainNumber>;
 
 /**
  * @brief A layer in a Tree.
@@ -41,7 +41,7 @@ concept tree_node_index = is_strong_type_with_capability<T, EnableArithmeticWith
  * The bottom layer is the layer 0.
  */
 template <typename T>
-concept tree_layer_index = is_strong_type_with_capability<T, EnableArithmeticWithPlainNumber>;
+concept tree_layer_index = strong_type_with_capability<T, EnableArithmeticWithPlainNumber>;
 
 template <strong_type S>
 struct strong_span_type {};

@@ -142,18 +142,6 @@ class Strong_Adapter<T> : public Strong_Base<T> {
 }  // namespace detail
 
 /**
- * Checks whether a strong type has the @p Capability included in its @p Tags type pack.
- */
-template <typename Capability, typename T, typename... Tags>
-constexpr auto strong_type_has_capability(Strong<T, Tags...>) {
-   if constexpr(Botan::detail::has_capability<Capability, Tags...>) {
-      return std::true_type{};
-   } else {
-      return std::false_type{};
-   }
-}
-
-/**
  * Strong types can be used as wrappers around common types to provide
  * compile time semantics. They usually contribute to more maintainable and
  * less error-prone code especially when dealing with function parameters.

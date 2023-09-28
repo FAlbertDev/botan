@@ -29,6 +29,18 @@ struct is_strong_type<Strong<Ts...>> : std::true_type {};
 template <typename... Ts>
 constexpr bool is_strong_type_v = is_strong_type<std::remove_const_t<Ts>...>::value;
 
+/**
+ * Checks whether a strong type has the @p Capability included in its @p Tags type pack.
+ */
+template <typename Capability, typename T, typename... Tags>
+constexpr auto strong_type_has_capability(Strong<T, Tags...>) {
+   if constexpr((std::is_same_v<Capability, Tags> || ...)) {
+      return std::true_type();
+   } else {
+      return std::false_type();
+   }
+}
+
 namespace concepts {
 
 // TODO: C++20 use std::convertible_to<> that was not available in Android NDK
@@ -118,11 +130,9 @@ template <class T>
 concept contiguous_strong_type = strong_type<T> && contiguous_container<T>;
 
 template <typename T, typename Capability>
-concept is_strong_type_with_capability = requires(T a) {
-                                            {
-                                               strong_type_has_capability<Capability>(a)
-                                               } -> std::same_as<std::true_type>;
-                                         };
+concept strong_type_with_capability = requires(T a) {
+                                         { strong_type_has_capability<Capability>(a) } -> std::same_as<std::true_type>;
+                                      };
 
 // std::integral is a concept that is shipped with C++20 but Android NDK is not
 // yet there.
