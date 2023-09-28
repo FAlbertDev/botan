@@ -140,8 +140,10 @@ class HSS_LMS_Too_Short_Test final : public Test {
          auto sk = Botan::create_private_key("HSS-LMS", Test::rng(), "Truncated(SHA-256,192),HW(5,8)");
 
          auto sk_bytes = sk->private_key_bits();
-         result.test_no_throw("Entire private key valid",
-                              [&]() { std::make_unique<Botan::HSS_LMS_PrivateKey>(sk_bytes); });
+         result.test_no_throw("Entire private key valid", [&]() {
+            Botan::HSS_LMS_PrivateKey key(sk_bytes);
+            BOTAN_UNUSED(key);
+         });
          for(size_t n = 0; n < sk_bytes.size(); ++n) {
             result.test_throws<Botan::Decoding_Error>("Partial private key invalid", [&]() {
                std::span<const uint8_t> partial_key = {sk_bytes.data(), n};
@@ -159,8 +161,10 @@ class HSS_LMS_Too_Short_Test final : public Test {
          auto sk = Botan::create_private_key("HSS-LMS", Test::rng(), "Truncated(SHA-256,192),HW(5,8)");
 
          auto sk_bytes = sk->public_key_bits();
-         result.test_no_throw("Entire public key valid",
-                              [&]() { std::make_unique<Botan::HSS_LMS_PublicKey>(sk_bytes); });
+         result.test_no_throw("Entire public key valid", [&]() {
+            Botan::HSS_LMS_PublicKey key(sk_bytes);
+            BOTAN_UNUSED(key);
+         });
          for(size_t n = 0; n < sk_bytes.size(); ++n) {
             result.test_throws<Botan::Decoding_Error>("Partial public key invalid", [&]() {
                std::span<const uint8_t> partial_key = {sk_bytes.data(), n};
