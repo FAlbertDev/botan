@@ -160,7 +160,7 @@ LMOTS_Params::LMOTS_Params(LMOTS_Algorithm_Type algorithm_type, std::string_view
    auto u = ceil_division<size_t>(8 * m_n, m_w);                         // ceil(8*n/w)
    auto v = ceil_division<size_t>(high_bit(((1 << m_w) - 1) * u), m_w);  // ceil((floor(lg[(2^w - 1) * u]) + 1) / w)
    m_ls = static_cast<uint8_t>(16 - (v * w));
-   m_p = u + v;
+   m_p = static_cast<uint16_t>(u + v);
 }
 
 LMOTS_Signature::LMOTS_Signature(LMOTS_Algorithm_Type lmots_type,
