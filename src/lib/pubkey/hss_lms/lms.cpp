@@ -142,7 +142,7 @@ LMS_Params LMS_Params::create_or_throw(LMS_Algorithm_Type type) {
    throw Decoding_Error("Unsupported LMS algorithm type");
 }
 
-LMS_Params LMS_Params::create_or_throw(std::string_view hash_name, size_t h) {
+LMS_Params LMS_Params::create_or_throw(std::string_view hash_name, uint8_t h) {
    BOTAN_ARG_CHECK(h == 5 || h == 10 || h == 15 || h == 20 || h == 25, "Invalid h value");
    auto type_offset = h / 5 - 1;
    LMS_Algorithm_Type base_type;

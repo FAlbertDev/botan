@@ -63,7 +63,7 @@ std::vector<LMS_Tree_Node_Idx> derive_lms_leaf_indices_from_hss_index(HSS_Sig_Id
       const HSS_LMS_Params::LMS_LMOTS_Params_Pair& layer_params = hss_params.params_at_level(layer);
       size_t layer_h = layer_params.lms_params().h();
       q.at(layer.get()) =
-         LMS_Tree_Node_Idx(static_cast<uint32_t>(hss_idx.get() % static_cast<uint64_t>(1ULL << layer_h)));
+         LMS_Tree_Node_Idx(checked_cast_to<uint32_t>(hss_idx.get() % checked_cast_to<uint64_t>(1ULL << layer_h)));
       hss_idx = hss_idx >> layer_h;
    }
    BOTAN_ARG_CHECK(hss_idx == HSS_Sig_Idx(0), "HSS Tree is exhausted");
@@ -355,7 +355,7 @@ size_t HSS_LMS_PublicKeyInternal::size() const {
 }
 
 bool HSS_LMS_PublicKeyInternal::verify_signature(std::span<const uint8_t> msg, const HSS_Signature& sig) const {
-   if(static_cast<HSS_Level>(sig.Nspk()) + 1 != L()) {
+   if(HSS_Level(checked_cast_to<uint32_t>(sig.Nspk())) + 1 != L()) {
       // HSS levels in the public key does not match with the signature's
       return false;
    }
@@ -401,7 +401,7 @@ HSS_Signature HSS_Signature::from_bytes_or_throw(std::span<const uint8_t> sig_by
    if(!slicer.empty()) {
       throw Decoding_Error("HSS-LMS signature contains more bytes than expected.");
    }
-   return HSS_Signature(static_cast<uint8_t>(Nspk), std::move(signed_pub_keys), std::move(sig));
+   return HSS_Signature(checked_cast_to<uint8_t>(Nspk), std::move(signed_pub_keys), std::move(sig));
 }
 
 size_t HSS_Signature::size(const HSS_LMS_Params& params) {

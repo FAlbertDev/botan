@@ -101,7 +101,7 @@ class BOTAN_TEST_API LMS_Params {
        * @param h The height of the tree.
        * @throws Decoding_Error If the algorithm type is unknown
        */
-      static LMS_Params create_or_throw(std::string_view hash_name, size_t h);
+      static LMS_Params create_or_throw(std::string_view hash_name, uint8_t h);
 
       /**
        * @brief Retuns the LMS algorithm type.
