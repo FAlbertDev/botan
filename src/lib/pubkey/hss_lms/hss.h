@@ -12,6 +12,7 @@
 #include <botan/asn1_obj.h>
 #include <botan/internal/lm_ots.h>
 #include <botan/internal/lms.h>
+#include <botan/internal/safeint.h>
 
 #include <cstdint>
 #include <memory>
@@ -99,7 +100,7 @@ class BOTAN_TEST_API HSS_LMS_Params final {
       /**
        * @brief Returns the number of layers the HSS tree has.
        */
-      HSS_Level L() const { return HSS_Level(static_cast<uint32_t>(m_lms_lmots_params.size())); }
+      HSS_Level L() const { return HSS_Level(checked_cast_to<uint32_t>(m_lms_lmots_params.size())); }
 
       /**
        * @brief The maximal number of signatures allowed for these HSS parameters

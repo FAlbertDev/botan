@@ -110,22 +110,22 @@ std::vector<uint8_t> gen_Q_with_cksm(const LMOTS_Params& params,
 }  // namespace
 
 LMOTS_Params LMOTS_Params::create_or_throw(LMOTS_Algorithm_Type type) {
-   uint8_t type_value = static_cast<uint8_t>(type);
+   uint8_t type_value = checked_cast_to<uint8_t>(type);
 
    if(type >= LMOTS_Algorithm_Type::SHA256_N32_W1 && type <= LMOTS_Algorithm_Type::SHA256_N32_W8) {
-      uint8_t w = 1 << (type_value - static_cast<uint8_t>(LMOTS_Algorithm_Type::SHA256_N32_W1));
+      uint8_t w = 1 << (type_value - checked_cast_to<uint8_t>(LMOTS_Algorithm_Type::SHA256_N32_W1));
       return LMOTS_Params(type, "SHA-256", w);
    }
    if(type >= LMOTS_Algorithm_Type::SHA256_N24_W1 && type <= LMOTS_Algorithm_Type::SHA256_N24_W8) {
-      uint8_t w = 1 << (type_value - static_cast<uint8_t>(LMOTS_Algorithm_Type::SHA256_N24_W1));
+      uint8_t w = 1 << (type_value - checked_cast_to<uint8_t>(LMOTS_Algorithm_Type::SHA256_N24_W1));
       return LMOTS_Params(type, "Truncated(SHA-256,192)", w);
    }
    if(type >= LMOTS_Algorithm_Type::SHAKE_N32_W1 && type <= LMOTS_Algorithm_Type::SHAKE_N32_W8) {
-      uint8_t w = 1 << (type_value - static_cast<uint8_t>(LMOTS_Algorithm_Type::SHAKE_N32_W1));
+      uint8_t w = 1 << (type_value - checked_cast_to<uint8_t>(LMOTS_Algorithm_Type::SHAKE_N32_W1));
       return LMOTS_Params(type, "SHAKE-256(256)", w);
    }
    if(type >= LMOTS_Algorithm_Type::SHAKE_N24_W1 && type <= LMOTS_Algorithm_Type::SHAKE_N24_W8) {
-      uint8_t w = 1 << (type_value - static_cast<uint8_t>(LMOTS_Algorithm_Type::SHAKE_N24_W1));
+      uint8_t w = 1 << (type_value - checked_cast_to<uint8_t>(LMOTS_Algorithm_Type::SHAKE_N24_W1));
       return LMOTS_Params(type, "SHAKE-256(192)", w);
    }
 
@@ -148,7 +148,7 @@ LMOTS_Params LMOTS_Params::create_or_throw(std::string_view hash_name, uint8_t w
    } else {
       throw Decoding_Error("Unsupported hash function");
    }
-   auto type = static_cast<LMOTS_Algorithm_Type>(static_cast<uint8_t>(base_type) + type_offset);
+   auto type = checked_cast_to<LMOTS_Algorithm_Type>(checked_cast_to<uint8_t>(base_type) + type_offset);
    return LMOTS_Params(type, hash_name, w);
 }
 
@@ -159,8 +159,8 @@ LMOTS_Params::LMOTS_Params(LMOTS_Algorithm_Type algorithm_type, std::string_view
    // RFC 8553 Appendix B - Parameter Computation
    auto u = ceil_division<size_t>(8 * m_n, m_w);                         // ceil(8*n/w)
    auto v = ceil_division<size_t>(high_bit(((1 << m_w) - 1) * u), m_w);  // ceil((floor(lg[(2^w - 1) * u]) + 1) / w)
-   m_ls = static_cast<uint8_t>(16 - (v * w));
-   m_p = static_cast<uint16_t>(u + v);
+   m_ls = checked_cast_to<uint8_t>(16 - (v * w));
+   m_p = checked_cast_to<uint16_t>(u + v);
 }
 
 LMOTS_Signature::LMOTS_Signature(LMOTS_Algorithm_Type lmots_type,

@@ -9,6 +9,7 @@
 #include <botan/internal/lms.h>
 
 #include <botan/internal/hss_lms_utils.h>
+#include <botan/internal/safeint.h>
 
 namespace Botan {
 namespace {
@@ -119,22 +120,22 @@ void lms_treehash(StrongSpan<LMS_Tree_Node> out_root,
 }  // namespace
 
 LMS_Params LMS_Params::create_or_throw(LMS_Algorithm_Type type) {
-   uint8_t type_value = static_cast<uint8_t>(type);
+   uint8_t type_value = checked_cast_to<uint8_t>(type);
 
    if(type >= LMS_Algorithm_Type::SHA256_M32_H5 && type <= LMS_Algorithm_Type::SHA256_M32_H25) {
-      uint8_t h = 5 * (type_value - static_cast<uint8_t>(LMS_Algorithm_Type::SHA256_M32_H5) + 1);
+      uint8_t h = 5 * (type_value - checked_cast_to<uint8_t>(LMS_Algorithm_Type::SHA256_M32_H5) + 1);
       return LMS_Params(type, "SHA-256", h);
    }
    if(type >= LMS_Algorithm_Type::SHA256_M24_H5 && type <= LMS_Algorithm_Type::SHA256_M24_H25) {
-      uint8_t h = 5 * (type_value - static_cast<uint8_t>(LMS_Algorithm_Type::SHA256_M24_H5) + 1);
+      uint8_t h = 5 * (type_value - checked_cast_to<uint8_t>(LMS_Algorithm_Type::SHA256_M24_H5) + 1);
       return LMS_Params(type, "Truncated(SHA-256,192)", h);
    }
    if(type >= LMS_Algorithm_Type::SHAKE_M32_H5 && type <= LMS_Algorithm_Type::SHAKE_M32_H25) {
-      uint8_t h = 5 * (type_value - static_cast<uint8_t>(LMS_Algorithm_Type::SHAKE_M32_H5) + 1);
+      uint8_t h = 5 * (type_value - checked_cast_to<uint8_t>(LMS_Algorithm_Type::SHAKE_M32_H5) + 1);
       return LMS_Params(type, "SHAKE-256(256)", h);
    }
    if(type >= LMS_Algorithm_Type::SHAKE_M24_H5 && type <= LMS_Algorithm_Type::SHAKE_M24_H25) {
-      uint8_t h = 5 * (type_value - static_cast<uint8_t>(LMS_Algorithm_Type::SHAKE_M24_H5) + 1);
+      uint8_t h = 5 * (type_value - checked_cast_to<uint8_t>(LMS_Algorithm_Type::SHAKE_M24_H5) + 1);
       return LMS_Params(type, "SHAKE-256(192)", h);
    }
 
@@ -157,7 +158,7 @@ LMS_Params LMS_Params::create_or_throw(std::string_view hash_name, size_t h) {
    } else {
       throw Decoding_Error("Unsupported hash function");
    }
-   auto type = static_cast<LMS_Algorithm_Type>(static_cast<uint8_t>(base_type) + type_offset);
+   auto type = checked_cast_to<LMS_Algorithm_Type>(checked_cast_to<uint8_t>(base_type) + type_offset);
    return LMS_Params(type, hash_name, h);
 }
 
