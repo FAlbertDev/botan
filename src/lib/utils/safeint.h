@@ -61,13 +61,18 @@ inline std::optional<size_t> checked_mul(size_t x, size_t y) {
    return z;
 }
 
-template <typename RT, typename AT>
-RT checked_cast_to(AT i) {
+template <typename RT, typename ExceptionType, typename AT>
+constexpr RT checked_cast_to_or_throw(AT i, std::string_view error_msg_on_fail) {
    RT c = static_cast<RT>(i);
    if(i != static_cast<AT>(c)) {
-      throw Internal_Error("Error during integer conversion");
+      throw ExceptionType(error_msg_on_fail);
    }
    return c;
+}
+
+template <typename RT, typename AT>
+constexpr RT checked_cast_to(AT i) {
+   return checked_cast_to_or_throw<RT, Internal_Error>(i, "Error during integer conversion");
 }
 
 #define BOTAN_CHECKED_ADD(x, y) checked_add(x, y, __FILE__, __LINE__)

@@ -145,7 +145,8 @@ class HSS_LMS_Too_Short_Test final : public Test {
          for(size_t n = 0; n < sk_bytes.size(); ++n) {
             result.test_throws<Botan::Decoding_Error>("Partial private key invalid", [&]() {
                std::span<const uint8_t> partial_key = {sk_bytes.data(), n};
-               std::make_unique<Botan::HSS_LMS_PrivateKey>(partial_key);
+               Botan::HSS_LMS_PrivateKey key(partial_key);
+               BOTAN_UNUSED(key);
             });
          }
          return result;
@@ -163,7 +164,8 @@ class HSS_LMS_Too_Short_Test final : public Test {
          for(size_t n = 0; n < sk_bytes.size(); ++n) {
             result.test_throws<Botan::Decoding_Error>("Partial public key invalid", [&]() {
                std::span<const uint8_t> partial_key = {sk_bytes.data(), n};
-               std::make_unique<Botan::HSS_LMS_PublicKey>(partial_key);
+               Botan::HSS_LMS_PublicKey key(partial_key);
+               BOTAN_UNUSED(key);
             });
          }
          return result;

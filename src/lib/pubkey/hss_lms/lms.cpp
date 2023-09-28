@@ -120,7 +120,7 @@ void lms_treehash(StrongSpan<LMS_Tree_Node> out_root,
 }  // namespace
 
 LMS_Params LMS_Params::create_or_throw(LMS_Algorithm_Type type) {
-   uint8_t type_value = checked_cast_to<uint8_t>(type);
+   uint8_t type_value = checked_cast_to_or_throw<uint8_t, Decoding_Error>(type, "Unsupported LMS algorithm type");
 
    if(type >= LMS_Algorithm_Type::SHA256_M32_H5 && type <= LMS_Algorithm_Type::SHA256_M32_H25) {
       uint8_t h = 5 * (type_value - checked_cast_to<uint8_t>(LMS_Algorithm_Type::SHA256_M32_H5) + 1);

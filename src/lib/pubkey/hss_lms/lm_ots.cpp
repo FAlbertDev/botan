@@ -110,7 +110,7 @@ std::vector<uint8_t> gen_Q_with_cksm(const LMOTS_Params& params,
 }  // namespace
 
 LMOTS_Params LMOTS_Params::create_or_throw(LMOTS_Algorithm_Type type) {
-   uint8_t type_value = checked_cast_to<uint8_t>(type);
+   uint8_t type_value = checked_cast_to_or_throw<uint8_t, Decoding_Error>(type, "Unsupported LM-OTS algorithm type");
 
    if(type >= LMOTS_Algorithm_Type::SHA256_N32_W1 && type <= LMOTS_Algorithm_Type::SHA256_N32_W8) {
       uint8_t w = 1 << (type_value - checked_cast_to<uint8_t>(LMOTS_Algorithm_Type::SHA256_N32_W1));

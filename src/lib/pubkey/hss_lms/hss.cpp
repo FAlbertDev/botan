@@ -90,8 +90,10 @@ HSS_LMS_Params::HSS_LMS_Params(std::string_view algo_params) {
       SCAN_Name scan_layer(scan.arg(i));
       BOTAN_ARG_CHECK(scan_layer.algo_name() == "HW", "Invalid name for layer parameters");
       BOTAN_ARG_CHECK(scan_layer.arg_count() == 2, "Invalid number of layer parameters");
-      const auto h = checked_cast_to<uint8_t>(scan_layer.arg_as_integer(0));
-      const auto w = checked_cast_to<uint8_t>(scan_layer.arg_as_integer(1));
+      const auto h =
+         checked_cast_to_or_throw<uint8_t, Invalid_Argument>(scan_layer.arg_as_integer(0), "Invalid parameter");
+      const auto w =
+         checked_cast_to_or_throw<uint8_t, Invalid_Argument>(scan_layer.arg_as_integer(1), "Invalid parameter");
       m_lms_lmots_params.push_back({LMS_Params::create_or_throw(hash, h), LMOTS_Params::create_or_throw(hash, w)});
    }
    m_max_sig_count = calc_max_sig_count();
