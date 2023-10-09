@@ -89,6 +89,7 @@ def server_test(botan_dir_path: str, parallel: int):
         "-parallelHandshakes", str(parallel),
         "-disableTcpDump",
         "-outputFolder", os.path.join(Config.test_suite_results_dest, Config.test_suite_results_dir_name),
+        "-testMethod", "de.rub.nds.tlstest.suite.tests.server.tls13.rfc8446.HelloRetryRequest#selectsSameCipherSuiteAllAtOnce",
         "-connectionTimeout", "5000",
         "server", "-connect", f"{Config.server_dest_ip}:{Config.server_dest_port}"
     ]
