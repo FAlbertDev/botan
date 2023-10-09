@@ -85,7 +85,7 @@ def server_test(botan_dir_path: str, parallel: int):
         "--network", "host",
         "-v", f"{Config.test_suite_results_dest}:/output",
         docker_img,
-        "-strength", "1",
+        "-strength", "3",
         "-parallelHandshakes", str(parallel),
         "-disableTcpDump",
         "-outputFolder", os.path.join(Config.test_suite_results_dest, Config.test_suite_results_dir_name),
