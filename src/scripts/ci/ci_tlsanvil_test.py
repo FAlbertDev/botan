@@ -13,8 +13,8 @@ import subprocess
 
 class Config:
     """ Hardcoded configurations for this CI script """
-    tls_anvil_docker_image = "ghcr.io/tls-attacker/tlsanvil"
-    tls_anvil_version_tag = "v1.2.2"
+    tls_anvil_docker_image = "ghcr.io/falbertdev/custom-tls-anvil"
+    tls_anvil_version_tag = "1.0.0"
     key_and_cert_storage_path = "/tmp/"
     test_suite_results_dest = "."
     test_suite_results_dir_name = "TestSuiteResults"
