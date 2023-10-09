@@ -77,12 +77,12 @@ jobs:
           --test-target server
           --parallel $(nproc)
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: tls-anvil-server-test-results
-          path: |
-            ./TestSuiteResults/
-            ./logs/
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: tls-anvil-server-test-results
+      #     path: |
+      #       ./TestSuiteResults/
+      #       ./logs/
 
       - name: Check TLS-Anvil Test Results
         run: python3 ./src/scripts/ci/ci_tlsanvil_check.py --verbose ./TestSuiteResults
